@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdlib.h>
+#include <string.h>
 
 int screen_width, screen_height;
 char * fractal_name;
@@ -19,6 +20,10 @@ int main(int argc, char ** argv) {
 		screen_height = atoi(argv[1]);
 		screen_width = atoi(argv[2]);
 		fractal_name = argv[3];
+		if(strcmp(fractal_name, "Mandelbrot") != 0 && strcmp(fractal_name, "Julia") != 0) {
+			puts("Unknown fractal");
+			return -1;
+		}
 		if(SDL_Init(SDL_INIT_VIDEO) < 0) {
 			puts("Failed to initialise SDL");
 			return - 1;
