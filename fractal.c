@@ -3,14 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-SDL_Window * window = NULL;
-SDL_Renderer * renderer;
 int screen_width, screen_height;
 char * fractal_name;
+SDL_Renderer * renderer;
 
 void mandelbrot() {
 	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
-	int a, b, n;
+	int a, b, n, r, g, bc;
 	short max_iterations;
 	z1 = z2 = 0.;
 	n = 0;
@@ -33,11 +32,24 @@ void mandelbrot() {
 				n++;
 			}
 			//TODO : Coloring the fractal
+			if(n == max_iterations) {
+				r = 0;
+				g = 0;
+				bc = 0;
+			}
+			else {
+				r = 255;
+				g = 0;
+				bc = 0;
+			}
+			SDL_SetRenderDrawColor(renderer, r, g, bc, 255);
+			SDL_RenderDrawPoint(renderer, a, b);
 		}
 	}
 }
 
 int main(int argc, char ** argv) {
+	SDL_Window * window = NULL;
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
 	char quit;
