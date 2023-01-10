@@ -26,7 +26,7 @@ void mandelbrot() {
 			c_im = maxCIm - b * (maxCIm - minCIm)/(screen_height - 1); //Imaginary part of the complex number
 			while(n < max_iterations && z1*z1 + z2*z2 <= 4) {
 				double z1_new;
-				z1_new = z1 * z1 + z2 * z2 + c_re;
+				z1_new = z1 * z1 - z2 * z2 + c_re;
 				z2 = 2 * z1 * z2 + c_im;
 				z1 = z1_new;
 				n++;
