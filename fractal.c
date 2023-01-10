@@ -46,7 +46,7 @@ void julia()
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
     double zoom = 1, moveX = 0, moveY = 0;
-    int  r,g,bc;
+    int  r,g,b;
 
     //Maximum iteration that function should stop
     int maxIterations = 300;
@@ -80,14 +80,14 @@ void julia()
                         if(i == maxIterations) {
                                 r = 255;
                                 g = 0;
-                                bc = 0;
+                                b = 0;
                         }
                         else {
                                 r = 0;
                                 g = 0;
-                                bc = 0;
+                                b = 0;
                         }
-                        SDL_SetRenderDrawColor(renderer, r, g, bc, 255);
+                        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
                         SDL_RenderDrawPoint(renderer, x, y);
             //Color pixel 
             //draw the pixel
