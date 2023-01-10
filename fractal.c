@@ -11,7 +11,6 @@ void mandelbrot() {
 	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
 	int a, b, n, r, g, bc;
 	short max_iterations;
-	z1 = z2 = 0.;
 	n = 0;
 	//Define the complex number (values can change)
 	minCRe = -2.0;
@@ -22,6 +21,7 @@ void mandelbrot() {
 	max_iterations = 200;
 	for(a = 0; a < screen_width; a++) {
 		for(b = 0; b < screen_height; b++) {
+			z1 = z2 = 0.;
 			c_re = minCRe + a * (maxCRe - minCRe)/(screen_width - 1); //Real part of the complex number
 			c_im = maxCIm - b * (maxCIm - minCIm)/(screen_height - 1); //Imaginary part of the complex number
 			while(n < max_iterations && z1*z1 + z2*z2 <= 4) {
@@ -30,6 +30,7 @@ void mandelbrot() {
 				z2 = 2 * z1 * z2 + c_im;
 				z1 = z1_new;
 				n++;
+				printf("%d\n", n);
 			}
 			//TODO : Coloring the fractal
 			if(n == max_iterations) {
