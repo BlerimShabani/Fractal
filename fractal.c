@@ -46,7 +46,7 @@ void julia()
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
     double zoom = 1, moveX = 0, moveY = 0;
-    ColorRGB color;
+    int  r,g,bc;
 
     //Maximum iteration that function should stop
     int maxIterations = 300;
@@ -56,12 +56,12 @@ void julia()
     cIm = 0.27015;
 
     //loop through every pixel
-    for(int y = 0; y < screen_heigh; y++)
+    for(int y = 0; y < screen_height; y++)
         for(int x = 0; x < screen_width; x++)
         {
             //calculate the initial real and imaginary part of z, based on the pixel location and zoom and position values
             newRe = 1.5 * (x - screen_width / 2) / (0.5 * zoom * screen_width) + moveX;
-            newIm = (y - screen_heigh / 2) / (0.5 * zoom * screen_high) + moveY;
+            newIm = (y - screen_height / 2) / (0.5 * zoom * screen_height) + moveY;
 
             int i;
             //start the iteration process
@@ -76,11 +76,24 @@ void julia()
                 //if the point is outside the circle with radius 2: stop
                 if((newRe * newRe + newIm * newIm) > 4) break;
             }
+	    //color pixel 
+                        if(i == maxIterations) {
+                                r = 255;
+                                g = 0;
+                                bc = 0;
+                        }
+                        else {
+                                r = 0;
+                                g = 0;
+                                bc = 0;
+                        }
+                        SDL_SetRenderDrawColor(renderer, r, g, bc, 255);
+                        SDL_RenderDrawPoint(renderer, x, y);
             //Color pixel 
             //draw the pixel
             //
         }
-
+}
 int main(int argc, char ** argv) {
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
