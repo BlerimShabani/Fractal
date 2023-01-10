@@ -76,10 +76,9 @@ void julia()
                 //if the point is outside the circle with radius 2: stop
                 if((newRe * newRe + newIm * newIm) > 4) break;
             }
-            //use color model conversion to get rainbow palette, make brightness black if maxIterations reached
-            color = HSVtoRGB(ColorHSV(i % 256, 255, 255 * (i < maxIterations)));
+            //Color pixel 
             //draw the pixel
-            //pset(x, y, color);
+            //
         }
 
 int main(int argc, char ** argv) {
