@@ -17,7 +17,7 @@ void julia()
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
     double zoom = 1, moveX = 0, moveY = 0;
-    int  r,g,b;
+    int  rC,gC,bC;
 
     //Maximum iteration that function should stop
     int maxIterations = 300;
@@ -49,16 +49,16 @@ void julia()
             }
 	    //drw pixel in color 
                         if(i == maxIterations) {
-                                r = 255;
-                                g = 0;
-                                b = 0;
+                                rC = 255;
+                                gC = 0;
+                                bC = 0;
                         }
                         else {
-                                r = 0;
-                                g = 0;
-                                b = 0;
+                                rC = 0;
+                                gC = 0;
+                                bC = 0;
                         }
-                        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+                        SDL_SetRenderDrawColor(renderer, rC, gC, bC, 255);
                         SDL_RenderDrawPoint(renderer, x, y);
             
         }
@@ -99,10 +99,12 @@ int main(int argc, char ** argv) {
 			return -1;
 		}
 		//CALL THE FUNCTION TO DISPLAY FRACTAL HERE
+                
 
 		if(strcmp("Julia", fractal_name) == 0) {
                         julia();
                 }
+		
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
