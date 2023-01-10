@@ -107,6 +107,7 @@ int main(int argc, char ** argv) {
 	SDL_Window * window = NULL;
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
+        const Uint8* state = SDL_GetKeyboardState(NULL);
 	char quit;
 	if(argc != 4) {
 		puts("Invalid number of arguments");
@@ -151,7 +152,7 @@ int main(int argc, char ** argv) {
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
 	    		while(SDL_PollEvent(&e)){ 
-	    			if(e.type == SDL_QUIT) quit = 1;
+	    			if(e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE]) quit = 1;
 	    		} 
     		}
 	}
