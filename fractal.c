@@ -37,6 +37,51 @@ void mandelbrot() {
 	}
 }
 
+void julia()
+{
+
+    /* Real and imaginary with const c to determine shape of Julia new and old,
+     change position and zoom, color for pixel */
+
+    double cRe, cIm;
+    double newRe, newIm, oldRe, oldIm;
+    double zoom = 1, moveX = 0, moveY = 0;
+    ColorRGB color;
+
+    //Maximum iteration that function should stop
+    int maxIterations = 300;
+
+    //some values for the constant c, this determines the shape of the Julia Set
+    cRe = -0.7;
+    cIm = 0.27015;
+
+    //loop through every pixel
+    for(int y = 0; y < screen_heigh; y++)
+        for(int x = 0; x < screen_width; x++)
+        {
+            //calculate the initial real and imaginary part of z, based on the pixel location and zoom and position values
+            newRe = 1.5 * (x - screen_width / 2) / (0.5 * zoom * screen_width) + moveX;
+            newIm = (y - screen_heigh / 2) / (0.5 * zoom * screen_high) + moveY;
+
+            int i;
+            //start the iteration process
+            for(i = 0; i < maxIterations; i++)
+            {
+                //remember value of previous iteration
+                oldRe = newRe;
+                oldIm = newIm;
+                //the actual iteration, the real and imaginary part are calculated
+                newRe = oldRe * oldRe - oldIm * oldIm + cRe;
+                newIm = 2 * oldRe * oldIm + cIm;
+                //if the point is outside the circle with radius 2: stop
+                if((newRe * newRe + newIm * newIm) > 4) break;
+            }
+            //use color model conversion to get rainbow palette, make brightness black if maxIterations reached
+            color = HSVtoRGB(ColorHSV(i % 256, 255, 255 * (i < maxIterations)));
+            //draw the pixel
+            //pset(x, y, color);
+        }
+
 int main(int argc, char ** argv) {
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
@@ -76,6 +121,10 @@ int main(int argc, char ** argv) {
 		if(strcmp("Mandelbrot", fractal_name) == 0) {
 			mandelbrot();
 		}
+
+		if(strcmp("Julia", fractal_name) == 0) {
+                        julia();
+                }
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
