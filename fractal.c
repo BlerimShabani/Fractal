@@ -3,12 +3,41 @@
 #include <stdlib.h>
 #include <string.h>
 
+SDL_Window * window = NULL;
+SDL_Renderer * renderer;
 int screen_width, screen_height;
 char * fractal_name;
 
+void mandelbrot() {
+	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
+	int a, b, n;
+	short max_iterations;
+	z1 = z2 = 0.;
+	n = 0;
+	//Define the complex number (values can change)
+	minCRe = -2.0;
+	maxCRe = 1.2;
+	minCIm = -1.2;
+	maxCIm = minCIm + (maxCRe - minCRe) * screen_height/screen_width;
+	//Max iterations for the display (value can change)
+	max_iterations = 200;
+	for(a = 0; a < screen_width; a++) {
+		for(b = 0; b < screen_height; b++) {
+			c_re = minCRe + a * (maxCRe - minCRe)/(screen_width - 1); //Real part of the complex number
+			c_im = maxCIm - b * (maxCIm - minCIm)/(screen_height - 1); //Imaginary part of the complex number
+			while(n < max_iterations && z1*z1 + z2*z2 <= 4) {
+				double z1_new;
+				z1_new = z1 * z1 + z2 * z2 + c_re;
+				z2 = 2 * z1 * z2 + c_im;
+				z1 = z1_new;
+				n++;
+			}
+			//TODO : Coloring the fractal
+		}
+	}
+}
+
 int main(int argc, char ** argv) {
-	SDL_Window * window = NULL;
-	SDL_Renderer * renderer;
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
 	char quit;
@@ -44,6 +73,9 @@ int main(int argc, char ** argv) {
 			return -1;
 		}
 		//CALL THE FUNCTION TO DISPLAY FRACTAL HERE
+		if(strcmp("Mandelbrot", fractal_name) == 0) {
+			mandelbrot();
+		}
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
