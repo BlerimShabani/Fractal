@@ -106,6 +106,26 @@ void julia(double moveX, double moveY, double zoom)
             
         }
 }
+
+double mouseX(int a, double moveX)
+{
+	if(a>screen_width/2)
+        moveX +=(double)(a/screen_width);
+        else if(a>screen_width/2)
+         moveX -=(double)(a/screen_width);
+	return moveX;
+} 
+
+double mouseY(int b, double moveY)
+{
+        if(b>screen_height/2)
+        moveY +=(double)(b/screen_height);
+        else if(b>screen_height/2)
+         moveY -=(double)(b/screen_height);
+	return moveY;
+        
+} 
+
 int main(int argc, char ** argv) {
 	SDL_Window * window = NULL;
 	SDL_Event e;
@@ -114,7 +134,7 @@ int main(int argc, char ** argv) {
 	double moveX = 0., moveY = 0.;
 	char quit, j = 0, m = 0;
 	double zoom = 1.;
-	const Uint32 SDL_GetMouseState(int *x,int *y);
+
 	int a,b;
 	a =(int)moveX;
         b=(int)moveY;
@@ -197,14 +217,21 @@ int main(int argc, char ** argv) {
                                         
                                         if(j){
 					SDL_GetMouseState(&a,&b);
-					 julia(moveX, moveY,zoom++);
-					a++;
-					b++;
+					printf("%d %d\n",a,b);
+					
+					moveX = mouseX(a,moveX);
+					moveY = mouseY(b,moveY);
+					julia(moveX, moveY,zoom++);
+					//moveX +=(double)((double)a/(double)screen_width);
+					
 					
 					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
-					 mandelbrot(moveX, moveY, zoom++);
+					printf("%d %d\n",a,b);
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
+					mandelbrot(moveX, moveY, zoom++);
 					}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
@@ -213,9 +240,13 @@ int main(int argc, char ** argv) {
                                          
                                         if(j){
 					SDL_GetMouseState(&a,&b);
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
 					julia(moveX, moveY, zoom--);}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
 				        mandelbrot(moveX, moveY,zoom--);}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
