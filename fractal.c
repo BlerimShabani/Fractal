@@ -222,15 +222,23 @@ int main(int argc, char ** argv) {
 
                                         }else if(e.wheel.x>0) {
 					
-                                        if(j) julia(moveX, moveY,zoom++);
-                                        else if(m) mandelbrot(moveX, moveY,zoom--);
+                                        if(j){
+					SDL_GetMouseState(&a,&b);
+					julia(moveX, moveY,zoom++);}
+                                        else if(m){
+					SDL_GetMouseState(&a,&b);
+					mandelbrot(moveX, moveY,zoom--);}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 					}
                                         else if(e.wheel.x<0) {
 					
-                                        if(j) julia(moveX, moveY,zoom--);
-                                        else if(m) mandelbrot(moveX, moveY,zoom--);
+                                        if(j){
+					SDL_GetMouseState(&a,&b);
+					julia(moveX, moveY,zoom--);}
+                                        else if(m){
+					SDL_GetMouseState(&a,&b);
+					mandelbrot(moveX, moveY,zoom--);}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 					}
