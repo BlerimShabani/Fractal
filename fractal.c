@@ -1,3 +1,5 @@
+
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdlib.h>
@@ -7,10 +9,11 @@ int screen_width, screen_height;
 char * fractal_name;
 SDL_Renderer * renderer;
 
-void mandelbrot() {
+void mandelbrot(double moveX, double moveY, double zoom) {
 	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
 	int a, b, n, r, g, bc;
 	short max_iterations;
+	//double zoom;
 	//Define the complex number (values can change)
 	minCRe = -2.0;
 	maxCRe = 1.2;
@@ -22,8 +25,8 @@ void mandelbrot() {
 		for(b = 0; b < screen_height; b++) {
 			n = 0;
 			z1 = z2 = 0.;
-			c_re = minCRe + a * (maxCRe - minCRe)/(screen_width - 1); //Real part of the complex number
-			c_im = maxCIm - b * (maxCIm - minCIm)/(screen_height - 1); //Imaginary part of the complex number
+			c_re = minCRe + a * (maxCRe - minCRe)/(screen_width*zoom*0.5 - 1) + moveX; //Real part of the complex number
+			c_im = maxCIm - b * (maxCIm - minCIm)/(screen_height*zoom*0.5 - 1) - moveY; //Imaginary part of the complex number
 			while(n < max_iterations && z1*z1 + z2*z2 <= 4) {
 				double z1_new;
 				z1_new = z1 * z1 - z2 * z2 + c_re;
@@ -48,7 +51,7 @@ void mandelbrot() {
 	}
 }
 
-void julia()
+void julia(double moveX, double moveY, double zoom)
 {
 
     /* Real and imaginary with const c to determine shape of Julia new and old,
@@ -56,7 +59,7 @@ void julia()
 
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
-    double zoom = 1, moveX = 0, moveY = 0;
+    //double zoom = 1;
     int  r,g,b;
 
     //Maximum iteration that function should stop
@@ -107,8 +110,14 @@ int main(int argc, char ** argv) {
 	SDL_Window * window = NULL;
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
-        const Uint8* state = SDL_GetKeyboardState(NULL);
-	char quit;
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+	double moveX = 0., moveY = 0.;
+	char quit, j = 0, m = 0;
+	double zoom = 1.;
+	const Uint32 SDL_GetMouseState(int *x,int *y);
+	int a,b;
+	a =(int)moveX;
+        b=(int)moveY;
 	if(argc != 4) {
 		puts("Invalid number of arguments");
 		return -1;
@@ -140,20 +149,94 @@ int main(int argc, char ** argv) {
 			puts("Failed to render");
 			return -1;
 		}
-		//CALL THE FUNCTION TO DISPLAY FRACTAL HERE
-
 		if(strcmp("Julia", fractal_name) == 0) {
-			julia();
+			julia(0., 0.,1.);
+			j = 1;
             }
             else if(strcmp("Mandelbrot", fractal_name) == 0) {
-            	mandelbrot();
+            	mandelbrot(0., 0.,1.);
+            	m = 1;
             }
 		SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
 	    		while(SDL_PollEvent(&e)){ 
 	    			if(e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE]) quit = 1;
+	    			else if(state[SDL_SCANCODE_UP]) {
+	    				moveY += 1;
+	    				if(j) julia(moveX, moveY, zoom);
+	    				else if(m) mandelbrot(moveX, moveY,zoom);
+	    				SDL_RenderPresent(renderer);
+					SDL_UpdateWindowSurface(window);
+	    			}
+	    			else if(state[SDL_SCANCODE_DOWN]) {
+	    				moveY -= 1;
+	    				if(j) julia(moveX, moveY, zoom);
+	    				else if(m) mandelbrot(moveX, moveY,zoom);
+	    				SDL_RenderPresent(renderer);
+					SDL_UpdateWindowSurface(window);
+	    			}
+	    			else if(state[SDL_SCANCODE_LEFT]) {
+	    				moveX += 1;
+	    				if(j) julia(moveX, moveY, zoom);
+	    				else if(m) mandelbrot(moveX, moveY,zoom);
+	    				SDL_RenderPresent(renderer);
+					SDL_UpdateWindowSurface(window);
+	    			}
+	    			else if(state[SDL_SCANCODE_RIGHT]) {
+	    				moveX -= 1;
+	    				if(j) julia(moveX, moveY, zoom);
+	    				else if(m) mandelbrot(moveX, moveY,zoom);
+	    				SDL_RenderPresent(renderer);
+					SDL_UpdateWindowSurface(window);
+	    			}
+				//Mouse moving....
+				if(e.type == SDL_MOUSEWHEEL)
+                                {
+                                        if(e.wheel.y>0){
+                                        
+                                        if(j){
+					SDL_GetMouseState(&a,&b);
+					 julia(moveX, moveY,zoom++);
+					a++;
+					b++;
+					
+					}
+                                        else if(m){
+					SDL_GetMouseState(&a,&b);
+					 mandelbrot(moveX, moveY, zoom++);
+					}
+                                        SDL_RenderPresent(renderer);
+                                        SDL_UpdateWindowSurface(window);
+
+                                        } else if(e.wheel.y<0){
+                                         
+                                        if(j){
+					SDL_GetMouseState(&a,&b);
+					julia(moveX, moveY, zoom--);}
+                                        else if(m){
+					SDL_GetMouseState(&a,&b);
+				        mandelbrot(moveX, moveY,zoom--);}
+                                        SDL_RenderPresent(renderer);
+                                        SDL_UpdateWindowSurface(window);
+
+                                        }else if(e.wheel.x>0) {
+					
+                                        if(j) julia(moveX, moveY,zoom++);
+                                        else if(m) mandelbrot(moveX, moveY,zoom--);
+                                        SDL_RenderPresent(renderer);
+                                        SDL_UpdateWindowSurface(window);
+					}
+                                        else if(e.wheel.x<0) {
+					
+                                        if(j) julia(moveX, moveY,zoom--);
+                                        else if(m) mandelbrot(moveX, moveY,zoom--);
+                                        SDL_RenderPresent(renderer);
+                                        SDL_UpdateWindowSurface(window);
+					}
+                                } else if(e.type == SDL_MOUSEBUTTONDOWN) {}
 	    		} 
     		}
 	}
 }
+
