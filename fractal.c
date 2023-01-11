@@ -107,9 +107,11 @@ int main(int argc, char ** argv) {
 	SDL_Window * window = NULL;
 	SDL_Event e;
 	SDL_Surface * screen_surface = NULL;
+	SDL_DisplayMode dm;
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 	double moveX = 0., moveY = 0.;
 	char quit, j = 0, m = 0;
+	int w, h;
 	if(argc != 4) {
 		puts("Invalid number of arguments");
 		return -1;
@@ -131,11 +133,22 @@ int main(int argc, char ** argv) {
 			puts("Failed to create window");
 			return -1;
 		}
+		if(SDL_GetDesktopDisplayMode(0, &dm) != 0) {
+			puts("Failed to get display mode");
+			return -1;
+		}
+		w = dm.w;
+		h = dm.h;
+		if(screen_width > w || screen_height > h) {
+			puts("Your window is too big !");
+			return -1;
+		}
 		screen_surface = SDL_GetWindowSurface(window);
 		if(!screen_surface) {
 			puts("Failed to get window surface");
 			return -1;
 		}
+		
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if(!renderer) {
 			puts("Failed to render");
@@ -154,33 +167,51 @@ int main(int argc, char ** argv) {
 		while(!quit){ 
 	    		while(SDL_PollEvent(&e)){ 
 	    			if(e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE]) quit = 1;
-	    			else if(state[SDL_SCANCODE_UP]) {
-	    				moveY += 1;
-	    				if(j) julia(moveX, moveY);
-	    				else if(m) mandelbrot(moveX, moveY);
-	    				SDL_RenderPresent(renderer);
-					SDL_UpdateWindowSurface(window);
-	    			}
-	    			else if(state[SDL_SCANCODE_DOWN]) {
-	    				moveY -= 1;
-	    				if(j) julia(moveX, moveY);
-	    				else if(m) mandelbrot(moveX, moveY);
-	    				SDL_RenderPresent(renderer);
-					SDL_UpdateWindowSurface(window);
-	    			}
-	    			else if(state[SDL_SCANCODE_LEFT]) {
-	    				moveX += 1;
-	    				if(j) julia(moveX, moveY);
-	    				else if(m) mandelbrot(moveX, moveY);
-	    				SDL_RenderPresent(renderer);
-					SDL_UpdateWindowSurface(window);
-	    			}
-	    			else if(state[SDL_SCANCODE_RIGHT]) {
-	    				moveX -= 1;
-	    				if(j) julia(moveX, moveY);
-	    				else if(m) mandelbrot(moveX, moveY);
-	    				SDL_RenderPresent(renderer);
-					SDL_UpdateWindowSurface(window);
+	    			if(e.type == SDL_KEYDOWN) {
+		    			if(state[SDL_SCANCODE_UP]) {
+		    				moveY += 1;
+		    				if(j) julia(moveX, moveY);
+		    				else if(m) mandelbrot(moveX, moveY);
+		    				SDL_RenderPresent(renderer);
+						SDL_UpdateWindowSurface(window);
+		    			}
+		    			else if(state[SDL_SCANCODE_DOWN]) {
+		    				moveY -= 1;
+		    				if(j) julia(moveX, moveY);
+		    				else if(m) mandelbrot(moveX, moveY);
+		    				SDL_RenderPresent(renderer);
+						SDL_UpdateWindowSurface(window);
+		    			}
+		    			else if(state[SDL_SCANCODE_LEFT]) {
+		    				moveX += 1;
+		    				if(j) julia(moveX, moveY);
+		    				else if(m) mandelbrot(moveX, moveY);
+		    				SDL_RenderPresent(renderer);
+						SDL_UpdateWindowSurface(window);
+		    			}
+		    			else if(state[SDL_SCANCODE_RIGHT]) {
+		    				moveX -= 1;
+		    				if(j) julia(moveX, moveY);
+		    				else if(m) mandelbrot(moveX, moveY);
+		    				SDL_RenderPresent(renderer);
+						SDL_UpdateWindowSurface(window);
+		    			}
+		    			else if(state[SDL_SCANCODE_SPACE]) {
+		    				if(j) {
+		    					mandelbrot(moveX, moveY);
+		    					SDL_RenderPresent(renderer);
+							SDL_UpdateWindowSurface(window);
+		    					m = 1;
+		    					j = 0;
+		    				}
+		    				else if(m) {
+		    					julia(moveX, moveY);
+		    					SDL_RenderPresent(renderer);
+							SDL_UpdateWindowSurface(window);
+							j = 1;
+		    					m = 0;
+		    				}
+		    			}
 	    			}
 	    		} 
     		}
