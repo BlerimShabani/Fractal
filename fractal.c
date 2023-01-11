@@ -59,7 +59,7 @@ void julia(double moveX, double moveY, double zoom)
 
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
-    //double zoom = 1;
+    
     int  r,g,b;
 
     //Maximum iteration that function should stop
@@ -78,7 +78,6 @@ void julia(double moveX, double moveY, double zoom)
             newIm = (y - screen_height / 2) / (0.5 * zoom * screen_height) + moveY;
 
             int i;
-            //start the iteration process
             for(i = 0; i < maxIterations; i++)
             {
                 //remember value of previous iteration
@@ -90,7 +89,7 @@ void julia(double moveX, double moveY, double zoom)
                 //if the point is outside the circle with radius 2: stop
                 if((newRe * newRe + newIm * newIm) > 4) break;
             }
-	    //drw pixel in color 
+	    // pixel in color 
                         if(i == maxIterations) {
                                 r = 255;
                                 g = 0;
@@ -221,14 +220,12 @@ int main(int argc, char ** argv) {
 					
 					moveX = mouseX(a,moveX);
 					moveY = mouseY(b,moveY);
-					julia(moveX, moveY,zoom++);
-					//moveX +=(double)((double)a/(double)screen_width);
-					
-					
+					julia(moveX, moveY,zoom++);	
 					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
 					printf("%d %d\n",a,b);
+
 					moveX = mouseX(a,moveX);
                                         moveY = mouseY(b,moveY);
 					mandelbrot(moveX, moveY, zoom++);
@@ -242,12 +239,14 @@ int main(int argc, char ** argv) {
 					SDL_GetMouseState(&a,&b);
 					moveX = mouseX(a,moveX);
                                         moveY = mouseY(b,moveY);
-					julia(moveX, moveY, zoom--);}
+					julia(moveX, moveY, zoom--);
+					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
 					moveX = mouseX(a,moveX);
                                         moveY = mouseY(b,moveY);
-				        mandelbrot(moveX, moveY,zoom--);}
+				        mandelbrot(moveX, moveY,zoom--);
+					}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 
@@ -255,10 +254,12 @@ int main(int argc, char ** argv) {
 					
                                         if(j){
 					SDL_GetMouseState(&a,&b);
-					julia(moveX, moveY,zoom++);}
+					julia(moveX, moveY,zoom++);
+					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
-					mandelbrot(moveX, moveY,zoom--);}
+					mandelbrot(moveX, moveY,zoom--);
+					}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 					}
@@ -273,7 +274,7 @@ int main(int argc, char ** argv) {
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 					}
-                                } else if(e.type == SDL_MOUSEBUTTONDOWN) {}
+                                }
 	    		} 
     		}
 	}
