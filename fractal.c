@@ -3,9 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define COLOR_SIZE 4
+
 int screen_width, screen_height;
 char * fractal_name;
 SDL_Renderer * renderer;
+int colors[COLOR_SIZE][3] = { 
+	{ 255, 0, 0 },
+	{ 0, 255, 0 },
+	{ 0, 0, 255 },
+	{ 63, 74, 0 }
+};
+short counter_color = 0;
+struct color_fractal {
+	int r; int g; int b;
+} color_fractal;
 
 void mandelbrot(double moveX, double moveY) {
 	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
@@ -33,9 +45,9 @@ void mandelbrot(double moveX, double moveY) {
 			}
 			//Color the fractal
 			if(n == max_iterations) {
-				r = 255;
-				g = 0;
-				bc = 0;
+				r = color_fractal.r;
+				g = color_fractal.g;
+				bc = color_fractal.b;
 			}
 			else {
 				r = 0;
@@ -89,9 +101,9 @@ void julia(double moveX, double moveY)
             }
 	    //drw pixel in color 
                         if(i == maxIterations) {
-                                r = 255;
-                                g = 0;
-                                b = 0;
+                                r = color_fractal.r;
+					  g = color_fractal.g;
+					  b = color_fractal.b;
                         }
                         else {
                                 r = 0;
@@ -154,6 +166,9 @@ int main(int argc, char ** argv) {
 			puts("Failed to render");
 			return -1;
 		}
+		color_fractal.r = colors[0][0];
+		color_fractal.g = colors[0][1];
+		color_fractal.b = colors[0][2];
 		if(strcmp("Julia", fractal_name) == 0) {
 			julia(0., 0.);
 			j = 1;
@@ -211,6 +226,17 @@ int main(int argc, char ** argv) {
 							j = 1;
 		    					m = 0;
 		    				}
+		    			}
+		    			else if(state[SDL_SCANCODE_C]) {
+		    				if(counter_color == COLOR_SIZE) counter_color = 0;
+		    				else counter_color++;
+		    				color_fractal.r = colors[counter_color][0];
+		    				color_fractal.g = colors[counter_color][1];
+		    				color_fractal.b = colors[counter_color][2];
+		    				if(j) julia(moveX, moveY);
+		    				else if(m) mandelbrot(moveX, moveY);
+		    				SDL_RenderPresent(renderer);
+						SDL_UpdateWindowSurface(window);
 		    			}
 	    			}
 	    		} 
