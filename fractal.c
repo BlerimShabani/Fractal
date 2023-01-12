@@ -1,5 +1,6 @@
 
 
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdlib.h>
@@ -54,33 +55,29 @@ void mandelbrot(double moveX, double moveY, double zoom) {
 void julia(double moveX, double moveY, double zoom)
 {
 
-    /* Real and imaginary with const c to determine shape of Julia new and old,
-     change position and zoom, color for pixel */
+    //Shape of Julia new and old through real and imaginary with const c imaginary and real  new and old z  
 
     double cRe, cIm;
     double newRe, newIm, oldRe, oldIm;
-    
     int  r,g,b;
+    int maxIterations = 280;
 
-    //Maximum iteration that function should stop
-    int maxIterations = 300;
-
-    //some values for the constant c, this determines the shape of the Julia Set
+    //Values for the constant c, this determines the shape of the Julia  
     cRe = -0.7;
     cIm = 0.27015;
 
-    //loop through every pixel
+    //iterate through every pixel
     for(int y = 0; y < screen_height; y++)
         for(int x = 0; x < screen_width; x++)
         {
-            //calculate the initial real and imaginary part of z, based on the pixel location and zoom and position values
+            //Real and imaginary part of z, based on the pixel location and zoom and position values
             newRe = 1.5 * (x - screen_width / 2) / (0.5 * zoom * screen_width) + moveX;
             newIm = (y - screen_height / 2) / (0.5 * zoom * screen_height) + moveY;
 
             int i;
             for(i = 0; i < maxIterations; i++)
             {
-                //remember value of previous iteration
+                //Set values of previous iteration
                 oldRe = newRe;
                 oldIm = newIm;
                 //the actual iteration, the real and imaginary part are calculated
@@ -108,19 +105,36 @@ void julia(double moveX, double moveY, double zoom)
 
 double mouseX(int a, double moveX)
 {
-	if(a>screen_width/2)
-        moveX +=(double)(a/screen_width);
-        else if(a>screen_width/2)
-         moveX -=(double)(a/screen_width);
+	/*double  minCRe = -2.0;
+	double  maxCRe = 2.0;
+	
+	moveX =(double)a/(screen_width/(maxCRe - minCRe))+ minCRe;
+	*/ 
+	
+	if((double)a>screen_width/2)
+        moveX +=(double)((double)a/screen_width);
+	//moveX +=(double)((double)a/(screen_width/(maxCRe-minCRe))+minCRe);
+        else if((double)a<screen_width/2)
+         moveX -=(double)((double)a/screen_width);
+	//moveX -=(double)((double)a/(screen_width/(maxCRe-minCRe))+minCRe);
 	return moveX;
 } 
 
 double mouseY(int b, double moveY)
-{
-        if(b>screen_height/2)
-        moveY +=(double)(b/screen_height);
-        else if(b>screen_height/2)
-         moveY -=(double)(b/screen_height);
+{       
+
+        //double minCRi = -2.0;
+        //double maxCRi = 2.0;
+	//moveY =(double)b/(screen_height/(maxCRi -minCRi)) + minCRi;
+        
+        if((double)b>screen_height/2)
+        moveY +=(double)((double)b/screen_height);
+	//moveY +=(double)((double)b/(screen_height/(maxCRi-minCRi))+minCRi);
+
+        else if(b<screen_height/2)
+        moveY -=(double)((double)b/screen_height);
+	//moveY -=(double)((double)b/(screen_height/(maxCRi-minCRi))*(-1)+minCRi);
+
 	return moveY;
         
 } 
@@ -220,7 +234,7 @@ int main(int argc, char ** argv) {
 					
 					moveX = mouseX(a,moveX);
 					moveY = mouseY(b,moveY);
-					julia(moveX, moveY,zoom++);	
+					julia(moveX, moveY,zoom++);
 					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
@@ -237,12 +251,16 @@ int main(int argc, char ** argv) {
                                          
                                         if(j){
 					SDL_GetMouseState(&a,&b);
+					printf("%d %d\n",a,b);
+
 					moveX = mouseX(a,moveX);
                                         moveY = mouseY(b,moveY);
 					julia(moveX, moveY, zoom--);
 					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
+					printf("%d %d\n",a,b);
+
 					moveX = mouseX(a,moveX);
                                         moveY = mouseY(b,moveY);
 				        mandelbrot(moveX, moveY,zoom--);
@@ -258,6 +276,9 @@ int main(int argc, char ** argv) {
 					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
+
 					mandelbrot(moveX, moveY,zoom--);
 					}
                                         SDL_RenderPresent(renderer);
@@ -267,10 +288,18 @@ int main(int argc, char ** argv) {
 					
                                         if(j){
 					SDL_GetMouseState(&a,&b);
-					julia(moveX, moveY,zoom--);}
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
+
+					julia(moveX, moveY,zoom--);
+					}
                                         else if(m){
 					SDL_GetMouseState(&a,&b);
-					mandelbrot(moveX, moveY,zoom--);}
+					moveX = mouseX(a,moveX);
+                                        moveY = mouseY(b,moveY);
+
+					mandelbrot(moveX, moveY,zoom--);
+					}
                                         SDL_RenderPresent(renderer);
                                         SDL_UpdateWindowSurface(window);
 					}
