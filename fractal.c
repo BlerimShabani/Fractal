@@ -67,8 +67,8 @@ void mandelbrot(double moveX, double moveY) {
 			color_index = n/range_size;
 			r1 = colors[color_index][0]; g1 = colors[color_index][1]; b1 = colors[color_index][2];
 			r2 = colors[color_index + 1][0]; g2 = colors[color_index + 1][1]; b2 = colors[color_index + 1][2];
-			ratio_a = (double)((double)(range_size * color_index)/(double)max_iterations);
-			ratio_b = (double)((double)(range_size * (color_index + 1))/(double)max_iterations);
+			ratio_a = (double)((double)abs(range_size * color_index - n)/(double)range_size);
+			ratio_b = (double)((double)abs((range_size * (color_index + 1)) - n)/(double)range_size);
 			r = (r1 * ratio_a) + (r2 * ratio_b);
 			printf("%d ", r);
 			g = (g1 * ratio_a) + (g2 * ratio_b);
