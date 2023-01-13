@@ -20,11 +20,11 @@ struct color_fractal {
 	int r; int g; int b;
 } color_fractal;
 
-int interpolate(int r1, int g1, int b1, int r2, int g2, int b2, double fraction) {
-	return (int) ((r2 - color_fractal.r) * fraction + color_fractal.r) << 16 |
-                (int) ((g2 - color_fractal.g) * fraction + color_fractal.g) << 8 |
-                (int) ((b2 - color_fractal.b) * fraction + color_fractal.b);
-}
+/*int interpolate(int r1, int g1, int b1, int r2, int g2, int b2, double fraction) {
+	return (int) ((r2 - r1) * fraction + r1) << 16 |
+                (int) ((g2 - g1) * fraction + g1) << 8 |
+                (int) ((b2 - b1) * fraction + b1);
+}*/
 
 void mandelbrot(double moveX, double moveY) {
 	double minCRe, maxCRe, minCIm, maxCIm, c_re, c_im, z1, z2;
@@ -55,28 +55,24 @@ void mandelbrot(double moveX, double moveY) {
 				r = color_fractal.r;
 				g = color_fractal.g;
 				bc = color_fractal.b;
-				/*int interpolation;
-				interpolation = interpolate(0.3);
-				r = (interpolation >> 16) & 0xff;
-				g = (interpolation >> 8) & 0xff;
-				bc = (interpolation & 0xff);*/
 			}
 			else {
 				r = 0;
 				g = 0;
 				bc = 0;
 			}
-			int r1, g1, b1, r2, g2, b2, interpolation, i;
-			double fract;
-			fract = (double)((double)n / (double)max_iterations);
-			i = floor((n / COLOR_SIZE));
-			r1 = colors[i][0]; g1 = colors[i][1]; b1 = colors[i][2];
-			r2 = colors[i + 1][0]; g2 = colors[i + 1][0]; b2 = colors[i + 1][2];
-			interpolation = interpolate(r1, g1, b1, r2, g2, b2, fract);
-			printf("%f ", fract);
-			r = ((interpolation >> 16) & 0xff);
-			g = ((interpolation >> 8) & 0xff);
-			bc = (interpolation & 0xff);
+			int range_size, color_index, r1, g1, b1, r2, b2, g2;
+			double ratio_a, ratio_b;
+			range_size = max_iterations/COLOR_SIZE;
+			color_index = n/range_size;
+			r1 = colors[color_index][0]; g1 = colors[color_index][1]; b1 = colors[color_index][2];
+			r2 = colors[color_index + 1][0]; g2 = colors[color_index + 1][1]; b2 = colors[color_index + 1][2];
+			ratio_a = (double)((double)(range_size * color_index)/(double)max_iterations);
+			ratio_b = (double)((double)(range_size * (color_index + 1))/(double)max_iterations);
+			r = (r1 * ratio_a) + (r2 * ratio_b);
+			printf("%d ", r);
+			g = (g1 * ratio_a) + (g2 * ratio_b);
+			bc = (b1 * ratio_a) + (b2 * ratio_b);
 			SDL_SetRenderDrawColor(renderer, r, g, bc, 255);
 			SDL_RenderDrawPoint(renderer, a, b);
 		}
