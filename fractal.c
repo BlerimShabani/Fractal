@@ -78,8 +78,6 @@ void mandelbrot(double moveX, double moveY) {
 			g = (g1 * ratio_a) + (g2 * ratio_b);
 			bc = (b1 * ratio_a) + (b2 * ratio_b);
 			if(g2 > 255 || g2 < 0) printf("%d %d %d \n", r2, g2, b2);
-			//SDL_SetRenderDrawColor(renderer, r, g, bc, 255);
-			//SDL_RenderDrawPoint(renderer, a, b);
 			pixels[b * screen_surface->w + a] = SDL_MapRGBA(screen_surface->format, r, g, bc, 255);
 		}
 	}
@@ -135,11 +133,7 @@ void julia(double moveX, double moveY)
                                 g = 0;
                                 b = 0;
                         }
-                        pixels[y* screen_width+x] = SDL_MapRGB(screen_surface->format, r, g, b);
-                        //SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-                        //SDL_RenderDrawPoint(renderer, x, y);
-                        //my_color = (r << 16) | (g << 8) | b;
-				//memcpy(&buffer[screen_width*y + x], &my_color, sizeof(int));
+                        pixels[y* screen_surface->w +x] = SDL_MapRGB(screen_surface->format, r, g, b);
             
         }
 }
@@ -183,19 +177,20 @@ int main(int argc, char ** argv) {
 			return -1;
 		}
 		screen_surface = SDL_GetWindowSurface(window);
+		pixels = screen_surface->pixels;
+		pixels[0] = 0;
 		if(!screen_surface) {
 			puts("Failed to get window surface");
 			return -1;
 		}
-		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		/*renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if(!renderer) {
 			puts("Failed to render");
 			return -1;
-		}
+		}*/
 		color_fractal.r = colors[0][0];
 		color_fractal.g = colors[0][1];
 		color_fractal.b = colors[0][2];
-		pixels = screen_surface->pixels;
 		if(strcmp("Julia", fractal_name) == 0) {
 			julia(0., 0.);
 			j = 1;
@@ -204,7 +199,7 @@ int main(int argc, char ** argv) {
             	mandelbrot(0., 0.);
             	m = 1;
             }
-		SDL_RenderPresent(renderer);
+		//SDL_RenderPresent(renderer);
 		SDL_UpdateWindowSurface(window);
 		while(!quit){ 
 	    		while(SDL_PollEvent(&e)){ 
@@ -214,41 +209,41 @@ int main(int argc, char ** argv) {
 		    				moveY += 1;
 		    				if(j) julia(moveX, moveY);
 		    				else if(m) mandelbrot(moveX, moveY);
-		    				SDL_RenderPresent(renderer);
+		    				//SDL_RenderPresent(renderer);
 						SDL_UpdateWindowSurface(window);
 		    			}
 		    			else if(state[SDL_SCANCODE_DOWN]) {
 		    				moveY -= 1;
 		    				if(j) julia(moveX, moveY);
 		    				else if(m) mandelbrot(moveX, moveY);
-		    				SDL_RenderPresent(renderer);
+		    				//SDL_RenderPresent(renderer);
 						SDL_UpdateWindowSurface(window);
 		    			}
 		    			else if(state[SDL_SCANCODE_LEFT]) {
 		    				moveX += 1;
 		    				if(j) julia(moveX, moveY);
 		    				else if(m) mandelbrot(moveX, moveY);
-		    				SDL_RenderPresent(renderer);
+		    				//SDL_RenderPresent(renderer);
 						SDL_UpdateWindowSurface(window);
 		    			}
 		    			else if(state[SDL_SCANCODE_RIGHT]) {
 		    				moveX -= 1;
 		    				if(j) julia(moveX, moveY);
 		    				else if(m) mandelbrot(moveX, moveY);
-		    				SDL_RenderPresent(renderer);
+		    				//SDL_RenderPresent(renderer);
 						SDL_UpdateWindowSurface(window);
 		    			}
 		    			else if(state[SDL_SCANCODE_SPACE]) {
 		    				if(j) {
 		    					mandelbrot(moveX, moveY);
-		    					SDL_RenderPresent(renderer);
+		    					//SDL_RenderPresent(renderer);
 							SDL_UpdateWindowSurface(window);
 		    					m = 1;
 		    					j = 0;
 		    				}
 		    				else if(m) {
 		    					julia(moveX, moveY);
-		    					SDL_RenderPresent(renderer);
+		    					//SDL_RenderPresent(renderer);
 							SDL_UpdateWindowSurface(window);
 							j = 1;
 		    					m = 0;
@@ -262,7 +257,7 @@ int main(int argc, char ** argv) {
 		    				color_fractal.b = colors[counter_color][2];
 		    				if(j) julia(moveX, moveY);
 		    				else if(m) mandelbrot(moveX, moveY);
-		    				SDL_RenderPresent(renderer);
+		    				//SDL_RenderPresent(renderer);
 						SDL_UpdateWindowSurface(window);
 		    			}
 	    			}
